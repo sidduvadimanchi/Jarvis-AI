@@ -128,13 +128,6 @@ async def TranslateAndExecute(commands: List[str]):
                 n  = int(nm.group(1)) if nm else 1
                 tasks.append(asyncio.to_thread(lambda i=n: _show(F["BookmarkJob"](i))))
 
-        # ── ALL JOBS (routes to advanced_jobs) ────────────────────────────────
-        elif lc.startswith("jobs") or any(w in lc for w in (
-            "upsc","ssc","railway","bank jobs","defence jobs","gate psu",
-            "data analyst","software jobs","python jobs","ml jobs","fresher jobs"
-        )):
-            tasks.append(asyncio.to_thread(lambda c=cmd: _show(F["handle_advanced_jobs"](c))))
-
         # ── FILE OPERATIONS ───────────────────────────────────────────────────
         elif lc.startswith("file "):
             tasks.append(asyncio.to_thread(F["handle_file_command"], cmd))
@@ -155,6 +148,10 @@ async def TranslateAndExecute(commands: List[str]):
             tasks.append(asyncio.to_thread(
                 lambda c=cmd: ShowTextToScreen(
                     f"Jarvis : {F['handle_advanced_jobs'](c)}")))
+        
+        # General jobs catch-all
+        elif lc.startswith("jobs"):
+             tasks.append(asyncio.to_thread(lambda c=cmd: _show(F["handle_advanced_jobs"](c))))
 
         elif "daily job briefing" in lc or "job alerts today" in lc:
             tasks.append(asyncio.to_thread(
@@ -198,7 +195,7 @@ async def TranslateAndExecute(commands: List[str]):
         elif lc.startswith("whatsapp"):
             tasks.append(asyncio.to_thread(F["SendWhatsApp"], cmd[9:].strip()))
         elif lc.startswith("read email"):
-            tasks.append(asyncio.to_thread(F["SendEmail"], "read"))
+            tasks.append(asyncio.to_thread(F["ReadEmail"], "read" if "read" in lc else cmd))
 
         # ── REMINDER / NOTIFY ─────────────────────────────────────────────────
         elif lc.startswith("reminder "):

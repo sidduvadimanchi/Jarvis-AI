@@ -9,6 +9,8 @@ import hashlib
 import os
 import random
 import threading
+import glob
+import time
 
 import edge_tts
 import pygame
@@ -35,6 +37,16 @@ LONG_WORD_COUNT: int = 60     # NEW: smarter long-answer detection
 # ──────────────────────────────────────────────
 os.makedirs(DATA_DIR,  exist_ok=True)
 os.makedirs(CACHE_DIR, exist_ok=True)
+
+def clean_cache(max_age_days=7):
+    """Purge old audio files to save disk space."""
+    now = time.time()
+    for f in glob.glob(os.path.join(CACHE_DIR, "*.mp3")):
+        if os.stat(f).st_mtime < now - max_age_days * 86400:
+            try: os.remove(f)
+            except: pass
+
+clean_cache()
 
 try:
     pygame.mixer.init()

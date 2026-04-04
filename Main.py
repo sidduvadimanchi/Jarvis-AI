@@ -41,6 +41,36 @@ for _fn in ["Mic.data", "Status.data", "Responses.data",
     if not _fp.exists():
         _fp.write_text("", encoding="utf-8")
 
+def _validate_env() -> None:
+    """Task 2: Strict .env validation at startup."""
+    required = {
+        "GROQ_API_KEY": ["GroqAPIKey", "GroqKey"],
+        "Username": [],
+        "Assistantname": []
+    }
+    missing = []
+    for key, aliases in required.items():
+        found = _env.get(key)
+        if not found:
+            for alias in aliases:
+                found = _env.get(alias)
+                if found: break
+        if not found:
+            missing.append(key)
+    
+    if "GROQ_API_KEY" in missing:
+        print("\n" + "="*52)
+        print("  CRITICAL ERROR: Groq API Key Missing!")
+        print("="*52)
+        print("  1. Go to: https://console.groq.com/keys")
+        print("  2. Create a key and add it to your .env file:")
+        print("     GROQ_API_KEY=gsk_your_key_here")
+        print("="*52 + "\n")
+        sys.exit(1)
+    
+    if missing:
+        print(f"  [WARN] Some non-critical .env keys missing: {', '.join(missing)}")
+
 # ─────────────────────────────────────────────────────────────────────────────
 # IMPORTS — each wrapped so one missing module won't crash everything
 # ─────────────────────────────────────────────────────────────────────────────
@@ -248,13 +278,19 @@ def _handle_query(query: str, is_typed: bool = False) -> None:
         if _is_automation(prediction):
             _thinking_stage(2)
             SetAssistantStatus("Processing...")
-            try:
-                asyncio.run(Automation(prediction))
-            except RuntimeError:
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-                loop.run_until_complete(Automation(prediction))
-                loop.close()
+            
+            # Task 3: Safe Async Runner to prevent RuntimeError across threads
+            def _run_automation():
+                try:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    loop.run_until_complete(Automation(prediction))
+                except Exception as e:
+                    print(f"  [ERROR] Automation Loop: {e}")
+                finally:
+                    loop.close()
+            
+            threading.Thread(target=_run_automation, daemon=True).start()
             return
 
         # ── Realtime search ───────────────────────────────────────────────────
@@ -375,7 +411,7 @@ def _startup_check() -> None:
     checks = [
         ("GUI          ", _GUI),
         ("Model/Intent ", _MODEL),
-        ("Chatbot      ", _GUI), # Placeholder for logic
+        ("Chatbot      ", _CHATBOT), 
         ("SpeechToText ", _STT),
         ("TextToSpeech ", _TTS),
         ("Automation   ", _AUTO),
@@ -408,6 +444,7 @@ def _startup_check() -> None:
 # ─────────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
+    _validate_env()
     _startup_check()
 
     # Start backend in daemon thread

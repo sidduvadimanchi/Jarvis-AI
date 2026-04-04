@@ -252,7 +252,7 @@ class JarvisChatbot:
     def _handle_greeting(self) -> str:
         hour = datetime.datetime.now().hour
         if _BRAIN:
-            from Backend.Brain.emotion import get_time_greeting
+            from core.brain.emotion import get_time_greeting
             base = get_time_greeting()
         else:
             if   5 <= hour < 12: base = f"Good morning {Username}!"
@@ -264,7 +264,7 @@ class JarvisChatbot:
         if _BRAIN:
             yesterday = None
             try:
-                from Backend.Brain.memory import get_yesterday_summary
+                from core.brain.memory import get_yesterday_summary
                 yesterday = get_yesterday_summary()
             except Exception:
                 pass
@@ -307,7 +307,7 @@ class JarvisChatbot:
                     })
                 # Save to persistent memory
                 if _BRAIN:
-                    from Backend.Brain.memory import save_daily_summary
+                    from core.brain.memory import save_daily_summary
                     save_daily_summary(summary, [], [])
             except Exception:
                 pass
@@ -542,8 +542,8 @@ class JarvisChatbot:
 # ── Singleton + public API (100% backward compatible) ─────────────────────────
 _bot = JarvisChatbot()
 
-def ChatBot(Query: str, stream_callback: Optional[Callable[[str], None]] = None) -> str:
-    return _bot.chat(Query, stream_callback)
+def ChatBot(Query: str, tone: str = "professional", stream_callback: Optional[Callable[[str], None]] = None) -> str:
+    return _bot.chat(Query, tone=tone, callback=stream_callback)
 
 def flush_chatbot()          -> None: _bot.flush()
 def clear_chatbot_history()  -> None: _bot.clear_history()
