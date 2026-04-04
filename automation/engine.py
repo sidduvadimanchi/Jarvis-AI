@@ -23,7 +23,7 @@ F = {}
 _imp("automation.modules.app_control",       ["OpenApp","CloseApp"],                   F)
 _imp("automation.modules.system_control",    ["System"],                               F)
 _imp("automation.modules.media_control",     ["PlayYoutube","GoogleSearch","YouTubeSearch","MediaControl"], F)
-_imp("automation.modules.email_system",      ["SendEmail"],                            F)
+_imp("automation.modules.email_system",      ["SendEmail", "ReadEmail"],               F)
 _imp("automation.modules.timetable",         ["ShowTimetable","AddTimetableEntry","DeleteTimetableEntry","ShowWeeklyTimetable"], F)
 _imp("automation.modules.study_tracker",     ["StudyTracker"],                         F)
 _imp("automation.modules.focus_mode",        ["FocusMode"],                            F)

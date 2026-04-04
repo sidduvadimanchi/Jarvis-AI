@@ -12,7 +12,7 @@ try:
     import cohere as _cohere
     if CohereAPIKey:
         # Enforce strict 4-second timeout to fall back instantly if network is blocked
-        co = _cohere.Client(api_key=CohereAPIKey, timeout=4.0)
+        co = _cohere.Client(api_key=CohereAPIKey, timeout=10.0)
 except ImportError:
     pass  # cohere not installed — _fallback_dmm will be used
 except Exception:
