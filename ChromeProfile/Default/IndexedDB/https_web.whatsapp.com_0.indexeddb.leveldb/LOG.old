@@ -1,0 +1,14 @@
+2026/03/04-14:40:20.146 f0 Reusing MANIFEST D:\Jarvis ai\ChromeProfile\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/03/04-14:40:20.147 f0 Recovering log #57
+2026/03/04-14:40:20.166 f0 Reusing old log D:\Jarvis ai\ChromeProfile\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000057.log 
+2026/03/04-14:40:39.297 40d0 Level-0 table #63: started
+2026/03/04-14:40:39.354 40d0 Level-0 table #63: 1226415 bytes OK
+2026/03/04-14:40:39.356 40d0 Delete type=0 #57
+2026/03/04-14:40:39.844 40d0 Compacting 1@1 + 2@2 files
+2026/03/04-14:40:39.903 40d0 Generated table #64@1: 55268 keys, 2221768 bytes
+2026/03/04-14:40:39.953 40d0 Generated table #65@1: 29042 keys, 1789120 bytes
+2026/03/04-14:40:39.953 40d0 Compacted 1@1 + 2@2 files => 4010888 bytes
+2026/03/04-14:40:39.955 40d0 compacted to: files[ 0 0 2 0 0 0 0 ]
+2026/03/04-14:40:39.955 40d0 Delete type=2 #59
+2026/03/04-14:40:39.955 40d0 Delete type=2 #60
+2026/03/04-14:40:39.956 40d0 Delete type=2 #63

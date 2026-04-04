@@ -1,0 +1,24 @@
+FROM    : Siddu Vadimanchi <>
+TO      : itmsiddu@gmail.com
+CC      : None
+BCC     : None
+SUBJECT : project is under development
+FILES   : None
+SENT    : 04 April 2026 11:43 AM
+──────────────────────────────────────────────────
+
+Dear Itmsiddu,
+
+I am writing to inform you that the project we have been working on is currently under development. Our team has been diligently working on the assigned tasks, and we are making steady progress.
+
+The project timeline remains unchanged, with the current deadline set for the end of the quarter. We are confident that we will meet this deadline, given the momentum we have gained so far.
+
+I would like to schedule a call next week to discuss the project's progress in more detail and address any questions or concerns you may have. Would you be available for a 30-minute call on Wednesday or Thursday of next week?
+
+Please let me know your availability, and I will make sure to schedule the call accordingly.
+
+Best regards,
+Siddu Vadimanchi
+
+Best regards,
+Siddu Vadimanchi

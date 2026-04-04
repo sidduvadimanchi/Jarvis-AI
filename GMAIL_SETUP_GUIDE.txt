@@ -1,0 +1,27 @@
+
+JARVIS GMAIL SETUP — ONE TIME ONLY
+===================================
+
+STEP 1: Install libraries
+  pip install google-auth google-auth-oauthlib google-api-python-client
+
+STEP 2: Get credentials.json from Google
+  1. Go to https://console.cloud.google.com
+  2. Create Project → name it "Jarvis"
+  3. Search "Gmail API" → Enable it
+  4. APIs & Services → Credentials
+  5. Create Credentials → OAuth Client ID → Desktop App
+  6. Download → save as credentials.json
+  7. Put credentials.json in D:\Jarvis ai\
+
+STEP 3: Add to .env (NO PASSWORD NEEDED)
+  GmailUser=youremail@gmail.com
+  GmailDisplayName=Your Full Name
+  GmailSignature=B.Tech CSE | University Name
+  Contact_professor=prof@college.edu
+  Contact_friend=friend@gmail.com
+
+STEP 4: Run Jarvis
+  Say "send email" → browser opens → login once → done forever!
+
+THAT'S IT. No password. No App Password. Just login once.

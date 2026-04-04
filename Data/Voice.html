@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jarvis Voice</title>
+</head>
+<body>
+    <button id="start" onclick="startRecognition()">Start</button>
+    <button id="end"   onclick="stopRecognition()">Stop</button>
+    <p id="output"></p>
+    <p id="status">ready</p>
+
+<script>
+    const output = document.getElementById('output');
+    const status = document.getElementById('status');
+    let recognition = null;
+    let active = false;
+
+    // BUG-1 FIX: correct cross-browser init
+    const SpeechAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    function startRecognition() {
+        if (!SpeechAPI) {
+            status.textContent = "error:unsupported";
+            return;
+        }
+        try {
+            recognition = new SpeechAPI();
+            // BUG-6 FIX: lang set from Python format — never empty at runtime
+            recognition.lang           = 'en';
+            recognition.continuous     = true;
+            recognition.interimResults = false;
+            active = true;
+            status.textContent = "listening";
+
+            recognition.onresult = function(e) {
+                const t = e.results[e.results.length - 1][0].transcript.trim();
+                if (t) {
+                    output.textContent += t + " ";
+                    status.textContent  = "received";
+                }
+            };
+
+            recognition.onerror = function(e) {
+                status.textContent = "error:" + e.error;
+                if (active && e.error !== "not-allowed" && e.error !== "service-not-allowed" && e.error !== "audio-capture") {
+                    setTimeout(() => { if (active) { try { recognition.start(); } catch(ex) {} } }, 400);
+                }
+            };
+
+            recognition.onend = function() {
+                if (active) {
+                    try { recognition.start(); } catch(ex) {}
+                }
+            };
+
+            recognition.start();
+        } catch(ex) {
+            status.textContent = "error:init:" + ex.message;
+        }
+    }
+
+    function stopRecognition() {
+        active = false;
+        if (recognition) { try { recognition.stop(); } catch(ex) {} }
+        output.innerHTML  = "";
+        status.textContent = "stopped";
+    }
+</script>
+</body>
+</html>

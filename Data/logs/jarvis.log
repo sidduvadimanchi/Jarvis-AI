@@ -1,0 +1,187 @@
+2026-03-05 23:45:16,829  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-05 23:45:17,503  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:45:30,865  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-05 23:45:30,989  [INFO]  ▶  Generating title for: World Cup
+2026-03-05 23:45:31,436  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:45:31,460  [INFO]  AI title: The Socio-Cultural Significance of the FIFA World Cup: A Comparative Analysis of Hosting Nations
+2026-03-05 23:45:31,461  [INFO]  ▶  Generating assignment content (~800 words) …
+2026-03-05 23:45:33,639  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:45:33,646  [INFO]  ▶  Running grammar improvement pass …
+2026-03-05 23:45:35,259  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:45:35,261  [INFO]  ▶  Formatting document …
+2026-03-05 23:45:35,369  [INFO]  ▶  Saving file …
+2026-03-05 23:45:35,385  [INFO]  Assignment saved: Data\Assignments\Assignment_World_Cup.docx
+2026-03-05 23:45:35,386  [INFO]  ▶  Opening Word …
+2026-03-05 23:46:09,738  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-05 23:46:11,487  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:46:31,665  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-05 23:46:32,629  [INFO]  ▶  Generating title for: (topic)
+2026-03-05 23:46:33,710  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:46:33,712  [INFO]  AI title: An Examination of the Intersectionality of Social Class and Racial Identity in Contemporary Societies
+2026-03-05 23:46:33,712  [INFO]  ▶  Generating assignment content (~800 words) …
+2026-03-05 23:46:35,856  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:46:35,857  [INFO]  ▶  Running grammar improvement pass …
+2026-03-05 23:46:37,959  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:46:37,963  [INFO]  ▶  Formatting document …
+2026-03-05 23:46:38,011  [INFO]  ▶  Saving file …
+2026-03-05 23:46:38,025  [INFO]  Assignment saved: Data\Assignments\Assignment_(topic).docx
+2026-03-05 23:46:38,026  [INFO]  ▶  Opening Word …
+2026-03-06 01:30:44,210  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 01:57:41,105  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 01:57:41,187  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 01:58:05,424  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 01:58:05,760  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 01:58:25,720  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 01:58:27,116  [INFO]  ▶  Generating title for: college assignment
+2026-03-06 01:58:27,749  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 01:58:27,752  [INFO]  AI title: A Critical Examination of the Impact of College Assignments on Student Learning Outcomes
+2026-03-06 01:58:27,756  [INFO]  ▶  Generating assignment content (~800 words) …
+2026-03-06 01:58:29,721  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 01:58:29,724  [INFO]  ▶  Running grammar improvement pass …
+2026-03-06 01:58:31,495  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 01:58:31,498  [INFO]  ▶  Formatting document …
+2026-03-06 01:58:31,680  [INFO]  ▶  Saving file …
+2026-03-06 01:58:31,705  [INFO]  Assignment saved: Data\Assignments\Assignment_college_assignment.docx
+2026-03-06 01:58:31,715  [INFO]  ▶  Opening Word …
+2026-03-06 12:47:27,143  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 12:47:27,948  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 12:47:38,405  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 12:49:07,997  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 12:49:28,879  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 12:49:40,253  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 12:49:40,970  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 12:49:56,632  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 12:50:18,855  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 12:50:19,291  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 12:51:07,856  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 12:51:08,339  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 12:51:51,031  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 12:51:52,753  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 14:16:32,269  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 14:20:23,705  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 14:20:41,736  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-06 14:20:42,974  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 15:26:29,577  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 15:34:19,864  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 15:36:49,361  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 15:37:50,504  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 15:37:50,980  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 15:37:51,117  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 15:38:22,495  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 15:39:56,246  [INFO]  Please visit this URL to authorize this application: https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=985316793135-07i19qado5evc1pfd73o1hah241h2fea.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A59081%2F&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send&state=4b8RIu6eDl74XcS7p4ZPj0RDlYfsBb&code_challenge=TnL5kUbEHjrhbXX2apZ-eBNLTq9PX2ZC8rRRgEbwg3w&code_challenge_method=S256&access_type=offline
+2026-03-07 15:47:04,131  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 15:47:08,949  [INFO]  Please visit this URL to authorize this application: https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=985316793135-07i19qado5evc1pfd73o1hah241h2fea.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A54373%2F&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send&state=JMDUHk3moS72kAHUgTubX4Zes0UhTu&code_challenge=TZvXHpQaYq1RdDTKOjOCSwn_I-0yuDtQyJFeEjSiWiY&code_challenge_method=S256&access_type=offline
+2026-03-07 15:49:09,653  [INFO]  "GET /?state=JMDUHk3moS72kAHUgTubX4Zes0UhTu&iss=https://accounts.google.com&code=4/0AfrIepBmm1uqyADmnI1Z50FToBEuUjxa4ZbUKfkxqT8dHgUCN9nWb9OdOhqjLDW84QBYuQ&scope=https://www.googleapis.com/auth/gmail.send HTTP/1.1" 200 65
+2026-03-07 15:49:10,412  [INFO]  Gmail token saved: Data\gmail_token.json
+2026-03-07 15:49:10,444  [INFO]  file_cache is only supported with oauth2client<4.0.0
+2026-03-07 15:54:17,303  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 15:54:42,828  [INFO]  Email sent via Gmail API | to=['ragalasasidhar179@gmail.com']
+2026-03-07 15:55:37,136  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 15:55:48,284  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 15:55:48,749  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 15:56:07,893  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 15:56:08,230  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 16:33:29,987  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 16:33:31,377  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 16:33:31,941  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 16:33:54,426  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 16:34:07,296  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 16:34:43,018  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 16:35:11,286  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 16:35:12,117  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 16:35:38,236  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 16:36:07,713  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 16:36:36,994  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 16:36:54,622  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 16:36:56,095  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:49:35,097  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 18:49:36,441  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:49:36,734  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:49:56,399  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 18:49:57,113  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:50:52,203  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 18:50:52,821  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:51:17,401  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:51:39,607  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 18:51:40,334  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:52:12,590  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 18:52:55,091  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:54:37,587  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 18:54:39,844  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:54:39,893  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:55:09,442  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 18:55:10,560  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:56:01,778  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 18:56:02,679  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:59:19,695  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 18:59:22,160  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 18:59:52,874  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 18:59:53,794  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:30:25,697  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:30:47,939  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:32:03,268  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 19:32:06,409  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:32:06,635  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:32:27,449  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 19:32:27,900  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:34:07,265  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 19:34:11,466  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:34:33,000  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 19:34:34,254  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:35:08,543  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 19:37:10,909  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 19:37:17,316  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:38:23,361  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 19:38:31,478  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:38:31,682  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-07 19:40:14,164  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-07 19:40:17,782  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-08 01:34:13,753  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-08 01:34:32,697  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-08 01:35:07,717  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-08 01:35:07,897  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-08 01:35:18,263  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-03-13 10:02:43,652  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-13 10:02:43,737  [INFO]  Title: **Artificial Intelligence and Machine Learning Paradigms**
+2026-03-13 10:02:44,698  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-13 10:02:44,701  [INFO]  Content OK: 352 words (attempt 1)
+2026-03-13 10:02:45,965  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-13 10:02:46,367  [INFO]  ▶  Formatting document …
+2026-03-13 10:02:46,367  [INFO]  NOTIFY  Jarvis — Formatting document …
+2026-03-13 10:02:49,486  [INFO]  Diagram inserted for topic: machine learning
+2026-03-13 10:02:49,486  [INFO]  ▶  Saving file …
+2026-03-13 10:02:49,486  [INFO]  NOTIFY  Jarvis — Saving file …
+2026-03-13 10:02:49,516  [INFO]  Saved: Data\Assignments\Assignment_machine_learning.docx  (537 words)
+2026-03-13 10:02:49,516  [INFO]  NOTIFY  Jarvis — Assignment Created 📄 — Assignment_machine_learning.docx
+2026-03-13 10:02:49,516  [INFO]  ▶  Opening Word …
+2026-03-13 10:02:49,516  [INFO]  NOTIFY  Jarvis — Opening Word …
+2026-03-13 10:03:53,720  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-13 10:03:53,761  [INFO]  Title: **Artificial Neural Network Optimization Through Advanced Machine Learning Paradigms**
+2026-03-13 10:03:55,943  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-13 10:03:55,946  [INFO]  Content OK: 879 words (attempt 1)
+2026-03-13 10:03:57,603  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-13 10:03:57,719  [INFO]  ▶  Formatting document …
+2026-03-13 10:03:57,719  [INFO]  NOTIFY  Jarvis — Formatting document …
+2026-03-13 10:03:58,532  [INFO]  Diagram inserted for topic: machine learning
+2026-03-13 10:03:58,534  [INFO]  ▶  Saving file …
+2026-03-13 10:03:58,534  [INFO]  NOTIFY  Jarvis — Saving file …
+2026-03-13 10:03:58,560  [INFO]  Saved: Data\Assignments\Assignment_machine_learning_100358.docx  (879 words)
+2026-03-13 10:03:58,560  [INFO]  NOTIFY  Jarvis — Assignment Created 📄 — Assignment_machine_learning_100358.docx
+2026-03-13 10:03:58,560  [INFO]  ▶  Opening Word …
+2026-03-13 10:03:58,560  [INFO]  NOTIFY  Jarvis — Opening Word …
+2026-03-14 15:57:39,297  [INFO]  Open: 'chrome'
+2026-03-14 15:57:39,327  [INFO]  'chrome' already running — focusing
+2026-04-03 10:47:00,742  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-04-03 10:47:01,423  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-03 10:47:01,640  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-03 10:47:10,039  [INFO]  HTTP Request: POST https://api.cohere.com/v1/chat "HTTP/1.1 200 OK"
+2026-04-03 10:47:10,294  [INFO]  HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-04 11:40:46,300  [INFO]  Please visit this URL to authorize this application: https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=985316793135-07i19qado5evc1pfd73o1hah241h2fea.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A60759%2F&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send&state=EBnZGbSGDSb1pV2hsKxc5AGHSw71mK&code_challenge=b97lnhAIVIzbRtBODzS6MCJdMeQn7F0ntgwyj5PAERw&code_challenge_method=S256&access_type=offline
+2026-04-04 11:41:19,095  [INFO]  "GET /?state=EBnZGbSGDSb1pV2hsKxc5AGHSw71mK&iss=https://accounts.google.com&code=4/0Aci98E_ryeP74uCuaB0eiQaiGAjO7FuRw-26ubPNDDIosIOBXryp9tUm6EDlVkEIHR5Efw&scope=https://www.googleapis.com/auth/gmail.send HTTP/1.1" 200 65
+2026-04-04 11:41:19,308  [INFO]  Gmail token saved: Data\gmail_token.json
+2026-04-04 11:41:19,322  [INFO]  file_cache is only supported with oauth2client<4.0.0
+2026-04-04 11:43:47,304  [INFO]  Email sent | to=['itmsiddu@gmail.com']
+2026-04-04 11:53:28,103  [INFO]  file_cache is only supported with oauth2client<4.0.0
+2026-04-04 11:54:36,695  [INFO]  Email sent | to=['pratapchoubey3@gmail.com']
+2026-04-04 12:08:06,931  [INFO]  file_cache is only supported with oauth2client<4.0.0
+2026-04-04 12:10:48,858  [INFO]  file_cache is only supported with oauth2client<4.0.0
