@@ -193,10 +193,21 @@ STEP 4: python email_system.py → browser opens → login once → done!
 # ══════════════════════════════════════════════════════════
 
 def _ask(prompt: str, default: str = "") -> str:
+    """BUG #12 FIX: Safe cross-thread input() wrapper.
+    input() is unreliable on Windows from non-main threads — gracefully falls back to default."""
     try:
+        import threading as _th
+        if _th.current_thread() is not _th.main_thread():
+            # On Windows, input() from a worker thread can hang or silently fail.
+            # Print the prompt so user can see it, but return default to avoid deadlock.
+            print(f"{prompt}[auto: '{default}']")
+            return default
         val = input(prompt).strip()
         return val if val else default
     except (EOFError, KeyboardInterrupt):
+        return default
+    except OSError:
+        # Happens when stdin is closed (e.g., piped input)
         return default
 
 
@@ -409,8 +420,12 @@ def _send_via_api(
 
 
 # ══════════════════════════════════════════════════════════
-# MAIN COMPOSER
-# ══════════════════════════════════════════════════════════
+def SendEmail(params: str = "") -> bool:
+    """Compose and send an email via Gmail API."""
+    ok = False   # BUG #3 FIX: Always initialized so 'return ok' in finally can never crash
+    service = _get_gmail_service()
+    if not service:
+        return False
 
     print(f"  Connected to Gmail as {GMAIL_USER}\n")
 
@@ -534,6 +549,34 @@ def _send_via_api(
         state_manager.set_state(TaskState.IDLE)
 
     return ok
+
+
+def ReadEmail(query: str = "all") -> str:
+    """Fetch and display the last few emails from Gmail."""
+    service = _get_gmail_service()
+    if not service:
+        return "Gmail service not available."
+
+    try:
+        results = service.users().messages().list(userId="me", maxResults=5).execute()
+        messages = results.get("messages", [])
+
+        if not messages:
+            return "No emails found."
+
+        summary = "\n  LATEST EMAILS:\n" + LINE + "\n"
+        for m in messages:
+            msg = service.users().messages().get(userId="me", id=m["id"]).execute()
+            headers = msg.get("payload", {}).get("headers", [])
+            subject = next((h["value"] for h in headers if h["name"] == "Subject"), "No Subject")
+            sender  = next((h["value"] for h in headers if h["name"] == "From"), "Unknown Sender")
+            snippet = msg.get("snippet", "")
+            summary += f"  FROM    : {sender}\n  SUBJECT : {subject}\n  SNIPPET : {snippet[:80]}...\n" + LINE + "\n"
+        
+        return summary
+    except Exception as e:
+        log.error("ReadEmail error: %s", e)
+        return f"Error reading emails: {e}"
 
 
 # ══════════════════════════════════════════════════════════

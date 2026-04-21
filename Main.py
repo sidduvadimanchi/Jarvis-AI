@@ -230,11 +230,14 @@ _AUTOMATION_KEYWORDS = [
 ]
 
 def _is_automation(prediction: list) -> bool:
-    """Check if any predicted label is an automation command."""
+    """Check if any predicted label is an explicit automation command."""
     for item in prediction:
-        lc = str(item).lower()
-        if any(kw in lc for kw in _AUTOMATION_KEYWORDS):
-            return True
+        lc = str(item).lower().strip()
+        # Ensure the label either starts with the keyword + space or is an exact match
+        # This prevents "how is the system" from being caught by "system shutdown"
+        for kw in _AUTOMATION_KEYWORDS:
+            if lc == kw or lc.startswith(kw + " "):
+                return True
     return False
 
 
@@ -271,6 +274,32 @@ def _handle_query(query: str, is_typed: bool = False) -> None:
         else:
             prediction = ["general"]
 
+        # ── STAGE 0: Permission Intercept ─────────────────────────────────────
+        if state_manager.get_context() == "system_permission":
+            ans = query.lower().strip()
+            if any(w in ans for w in ("yes", "ok", "do it", "sure", "yep", "fine", "proceed")):
+                from automation.modules.app_monitor import KillProcess
+                pending_file = Path("Data")/"Files"/"PendingAction.data"
+                if pending_file.exists():
+                    action_data = pending_file.read_text(encoding="utf-8").split("|")
+                    if action_data[0] == "kill":
+                        KillProcess(action_data[1])
+                        ShowTextToScreen(f"Jarvis : Optimizing system... {action_data[1]} closed.")
+                        if _TTS: TextToSpeech("Optimizing system, sir.")
+                pending_file.unlink(missing_ok=True)
+                state_manager.set_context(None)
+                state_manager.set_state(TaskState.IDLE)
+                return
+            else:
+                # Cancel pending action
+                (Path("Data")/"Files"/"PendingAction.data").unlink(missing_ok=True)
+                state_manager.set_context(None)
+                state_manager.set_state(TaskState.IDLE)
+                # Continue to normal chat if it wasn't a clear 'no'
+                if any(w in ans for w in ("no", "don't", "stop", "cancel")):
+                    ShowTextToScreen("Jarvis : Understood. No changes made.")
+                    return
+
         # ── STAGE 1: after DMM returned ───────────────────────────────────────
         _thinking_stage(1)
 
@@ -281,14 +310,18 @@ def _handle_query(query: str, is_typed: bool = False) -> None:
             
             # Task 3: Safe Async Runner to prevent RuntimeError across threads
             def _run_automation():
+                loop = asyncio.new_event_loop()
                 try:
-                    loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(loop)
                     loop.run_until_complete(Automation(prediction))
                 except Exception as e:
                     print(f"  [ERROR] Automation Loop: {e}")
                 finally:
                     loop.close()
+                    # BUG #4 FIX: Always reset state so Jarvis never freezes permanently
+                    state_manager.set_state(TaskState.IDLE)
+                    SetAssistantStatus("Available...")
+                    SetJarvisBusy(False)
             
             threading.Thread(target=_run_automation, daemon=True).start()
             return
@@ -364,12 +397,18 @@ def MainExecution() -> None:
     print(f"  [{Assistantname}] Backend started.")
     SetAssistantStatus("Available...")
 
+    # BUG #9 FIX: Adaptive sleep — fast when active, slow when idle
+    _ACTIVE_SLEEP = 0.05   # 50ms  when mic is live or input arrived
+    _IDLE_SLEEP   = 0.20   # 200ms when nothing is happening
+    _sleep_time   = _IDLE_SLEEP
+
     while True:
         try:
             # ── 1. VOICE INPUT ────────────────────────────────────────────
             mic = _read("Mic.data", "False")
 
             if mic == "True":
+                _sleep_time = _ACTIVE_SLEEP
                 SetAssistantStatus("Listening...")
                 query = SpeechRecognition() if _STT else ""
 
@@ -377,6 +416,8 @@ def MainExecution() -> None:
                     _handle_query(query.strip(), is_typed=False)
                 else:
                     SetAssistantStatus("Available...")
+            else:
+                _sleep_time = _IDLE_SLEEP
 
             # ── 2. TYPED INPUT from GUI ───────────────────────────────────
             typed_file = _TEMP / "TypedInput.data"
@@ -384,7 +425,8 @@ def MainExecution() -> None:
                 typed = typed_file.read_text(encoding="utf-8").strip()
                 if typed and typed != _last_typed:
                     _last_typed = typed
-                    SetJarvisBusy(True) # NEW: Lock prompt instantly
+                    _sleep_time = _ACTIVE_SLEEP
+                    SetJarvisBusy(True) # Lock prompt instantly
                     # Clear immediately to signal GUI that we've picked it up
                     typed_file.write_text("", encoding="utf-8")
                     _handle_query(typed, is_typed=True)
@@ -396,7 +438,7 @@ def MainExecution() -> None:
             print(f"  [ERROR] MainExecution loop: {e}")
             SetAssistantStatus("Available...")
 
-        time.sleep(0.1)   # 100ms poll interval
+        time.sleep(_sleep_time)   # Adaptive: 50ms active / 200ms idle
 
 # ─────────────────────────────────────────────────────────────────────────────
 # STARTUP CHECKS

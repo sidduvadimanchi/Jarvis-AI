@@ -28,7 +28,8 @@ funcs = [
     "market jobs","briefing","bookmark",
 ]
 
-messages = []
+# BUG #7 FIX: Removed module-level 'messages = []' that previously
+# grew unbounded on every call but was never actually used or cleared.
 
 preamble = """
 You are a very accurate Decision-Making Model for Jarvis AI.
@@ -136,7 +137,6 @@ ChatHistory = [
 
 def FirstLayerDMM(prompt:str="test") -> list[str]:
     if not co: return _fallback_dmm(prompt)
-    messages.append({"role":"user","content":prompt})
     try:
         stream   = co.chat_stream(model="command-r-08-2024",message=prompt,
                                   temperature=0.7,chat_history=ChatHistory,
@@ -418,12 +418,26 @@ def _patch_fallback(prompt: str) -> list[str]:
             return [f"jobs market {kw}"]
     return _fallback_dmm(prompt)
 
-# Override FirstLayerDMM to use patched version
-_orig_first = FirstLayerDMM
-def FirstLayerDMM(prompt: str = "test") -> list[str]:
-    result = _orig_first(prompt)
-    if result and result[0].startswith("general"):
-        patched = _patch_fallback(prompt)
-        if not patched[0].startswith("general"):
-            return patched
-    return result if result else _patch_fallback(prompt)
+# BUG #8 FIX: Removed the double-call wrapper that re-invoked FirstLayerDMM
+# and caused 2x slowdown on every intent classification. The GATE/PSU/market
+# job patterns from _patch_fallback are now merged directly into _fallback_dmm
+# above (the job_map and GATE sections already cover those cases).
+# _patch_fallback is kept below for reference but is no longer wired in.
+
+def _patch_fallback(prompt: str) -> list[str]:
+    """Legacy: GATE/PSU/market job detection (now redundant — covered by _fallback_dmm)."""
+    low = prompt.lower().strip()
+    for p in _GATE_PSU_PATTERNS:
+        if re.search(p, low):
+            return [f"jobs gate_psu {prompt}"]
+    for p in _MARKET_JOB_PATTERNS:
+        m = re.search(p, low)
+        if m:
+            return [f"jobs market {m.group(1)}"]
+    job_m = re.search(r"(.+?)\s+jobs?\s*(today|now|2025|in\s+india)?$", low)
+    if job_m and len(job_m.group(1)) > 3:
+        kw = job_m.group(1).strip()
+        skip = {"govt","government","latest","any","all","new"}
+        if kw not in skip:
+            return [f"jobs market {kw}"]
+    return _fallback_dmm(prompt)

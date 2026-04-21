@@ -35,6 +35,7 @@ _imp("automation.modules.alarm_clock",       ["handle_alarm_command","StopAlarm"
 _imp("automation.modules.realtime_data",     ["handle_realtime_command","GetWeather","GetNews","GetStock","GetCrypto","GetSports","TranslateText","GetJobs"], F)
 _imp("automation.modules.file_control",      ["handle_file_command","OpenFolder","FindFiles","ZipFolder","BackupFolder","CreateFile"], F)
 _imp("automation.modules.advanced_jobs",     ["handle_advanced_jobs","GetGovtJob","GetGATEPSU","GetGATESyllabus","GetMarketJobs","GetDeadlines","DailyJobBriefing","BookmarkJob","GetBookmarks"], F)
+_imp("automation.modules.code_auditor",      ["FindBugs"],                             F)
 
 try:
     from automation.modules.whatsapp_system import SendWhatsApp
@@ -58,6 +59,15 @@ def _show(result: str):
     ShowTextToScreen(f"Jarvis : {result}")
 
 
+def _learn(topic: str, content: str, source: str = "search"):
+    """Silently save learned info to brain."""
+    try:
+        from core.brain.memory import save_knowledge
+        save_knowledge(topic, content, source)
+    except:
+        pass
+
+
 async def TranslateAndExecute(commands: List[str]):
     tasks = []
 
@@ -76,11 +86,19 @@ async def TranslateAndExecute(commands: List[str]):
 
         # ── WEATHER ───────────────────────────────────────────────────────────
         elif lc.startswith("weather"):
-            tasks.append(asyncio.to_thread(lambda c=cmd: _show(F["handle_realtime_command"](c))))
+            def _w(c=cmd):
+                res = F["handle_realtime_command"](c)
+                _show(res)
+                _learn("weather", res)
+            tasks.append(asyncio.to_thread(_w))
 
         # ── NEWS ──────────────────────────────────────────────────────────────
         elif lc.startswith("news"):
-            tasks.append(asyncio.to_thread(lambda c=cmd: _show(F["handle_realtime_command"](c))))
+            def _n(c=cmd):
+                res = F["handle_realtime_command"](c)
+                _show(res)
+                _learn("news", res)
+            tasks.append(asyncio.to_thread(_n))
 
         # ── STOCK / CRYPTO ────────────────────────────────────────────────────
         elif lc.startswith("stock"):
@@ -139,6 +157,7 @@ async def TranslateAndExecute(commands: List[str]):
                 result = F["handle_realtime_command"](f"news {t}")
                 _show(f"Research on {t}:\n{result}")
                 F["CreateNotes"](f"{t}\n\n{result}")
+                _learn(t, result)
             tasks.append(asyncio.to_thread(_research))
 
 
@@ -186,8 +205,25 @@ async def TranslateAndExecute(commands: List[str]):
                 tasks.append(asyncio.to_thread(F["SystemHealth"]))
             else:
                 tasks.append(asyncio.to_thread(F["System"], t))
-        elif lc in ("health","system health","check system"):
-            tasks.append(asyncio.to_thread(F["SystemHealth"]))
+        # ── SYSTEM / CODE AUDITOR ─────────────────────────────────────────────
+        elif any(w in lc for w in ("health","system health","check system","is system heavy")):
+            def _sys_audit():
+                healthy, app, mem = F["SystemHealth"]()
+                if healthy:
+                    _show("System is running light and healthy, sir.")
+                else:
+                    msg = f"The system is a bit heavy, sir. {app} is using {mem:.1f} GB of RAM. Should I close it for you?"
+                    _show(msg)
+                    # Set state to wait for permission
+                    from core.state import state_manager, TaskState
+                    state_manager.set_context("system_permission")
+                    state_manager.set_state(TaskState.COLLECTING)
+                    # We store the target app in a shared file for Main.py to pick up
+                    (Path("Data")/"Files"/"PendingAction.data").write_text(f"kill|{app}", encoding="utf-8")
+            tasks.append(asyncio.to_thread(_sys_audit))
+
+        elif any(w in lc for w in ("code audit","check code","any bugs","is code ok")):
+            tasks.append(asyncio.to_thread(lambda: _show(F["FindBugs"]())))
 
         # ── EMAIL / WHATSAPP ──────────────────────────────────────────────────
         elif lc.startswith("email") or "send email" in lc:
@@ -259,12 +295,14 @@ async def TranslateAndExecute(commands: List[str]):
         results = await asyncio.gather(*tasks, return_exceptions=True)
         for r in results:
             if isinstance(r, Exception): print(f"  [Engine Error] {r}")
-            yield r
+        return results   # BUG #6 FIX: Return results instead of yielding them
+    return []            # Always return a list, never a generator
 
 
 async def Automation(commands: List[str]) -> bool:
-    async for _ in TranslateAndExecute(commands):
-        pass
+    # BUG #6 FIX: TranslateAndExecute is now a regular coroutine (not a generator).
+    # We await it directly instead of iterating with 'async for'.
+    results = await TranslateAndExecute(commands)
     return True
 
 

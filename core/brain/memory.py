@@ -40,18 +40,37 @@ CREATE TABLE IF NOT EXISTS user_facts (
     updated_at  TEXT
 );
 
+CREATE TABLE IF NOT EXISTS knowledge (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    topic       TEXT    NOT NULL,
+    content     TEXT    NOT NULL,
+    source      TEXT,               -- 'search', 'user', 'interaction'
+    updated_at  TEXT    NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_conv_session ON conversations(session_id);
 CREATE INDEX IF NOT EXISTS idx_conv_time    ON conversations(timestamp);
 """
 
 
+# ── Persistent connection (BUG #5 FIX) ─────────────────────────────────────
+# Previously opened a new SQLite connection on EVERY call—causing handle
+# leaks and significant latency under load. Now we keep one persistent
+# connection with WAL mode so concurrent reads never block each other.
+_db_connection: "sqlite3.Connection | None" = None
+
 def _conn() -> sqlite3.Connection:
-    """Get a thread-local connection."""
-    Path("Data").mkdir(parents=True, exist_ok=True)
-    c = sqlite3.connect(str(_DB_PATH), check_same_thread=False)
-    c.row_factory = sqlite3.Row
-    c.executescript(_SCHEMA)
-    return c
+    """Return the single, reusable database connection (thread-safe via _lock)."""
+    global _db_connection
+    if _db_connection is None:
+        Path("Data").mkdir(parents=True, exist_ok=True)
+        _db_connection = sqlite3.connect(str(_DB_PATH), check_same_thread=False)
+        _db_connection.row_factory = sqlite3.Row
+        # WAL mode: readers don’t block writers, writers don’t block readers
+        _db_connection.execute("PRAGMA journal_mode=WAL")
+        _db_connection.execute("PRAGMA synchronous=NORMAL")  # Fast + safe
+        _db_connection.executescript(_SCHEMA)
+    return _db_connection
 
 
 # ── Session ID (one per run) ──────────────────────────────────
@@ -173,6 +192,44 @@ def save_daily_summary(summary: str, emotions: list[str], topics: list[str]) -> 
         c.close()
 
 
+def save_knowledge(topic: str, content: str, source: str = "interaction") -> None:
+    """Store learned facts from search results or user interaction."""
+    with _lock:
+        c = _conn()
+        # Keep only unique topics, but update them with new content
+        c.execute(
+            "INSERT OR REPLACE INTO knowledge (topic, content, source, updated_at)"
+            " VALUES (?, ?, ?, ?)",
+            (topic.lower(), content[:3000], source, datetime.datetime.now().isoformat())
+        )
+        c.commit()
+        c.close()
+
+
+def get_relevant_knowledge(query: str, limit: int = 3) -> list[dict]:
+    """Retrieve knowledge entries relevant to the query (simple keyword match)."""
+    with _lock:
+        c = _conn()
+        # Simple keyword matching for now
+        words = [w.strip() for w in query.lower().split() if len(w) > 3]
+        if not words:
+            # If no good keywords, just return recent knowledge
+            rows = c.execute(
+                "SELECT topic, content, source FROM knowledge ORDER BY updated_at DESC LIMIT ?",
+                (limit,)
+            ).fetchall()
+        else:
+            # Build query with LIKE for each word
+            q_parts = [f"(topic LIKE ? OR content LIKE ?)" for _ in words]
+            params  = []
+            for w in words:
+                params.extend([f"%{w}%", f"%{w}%"])
+            sql = f"SELECT topic, content, source FROM knowledge WHERE {' OR '.join(q_parts)} ORDER BY updated_at DESC LIMIT ?"
+            rows = c.execute(sql, params + [limit]).fetchall()
+        c.close()
+    return [dict(r) for r in rows]
+
+
 def build_memory_context() -> str:
     """
     Build a compact memory context string to inject into system prompt.
@@ -198,5 +255,11 @@ def build_memory_context() -> str:
         if stats["emotions"]:
             dominant = max(stats["emotions"], key=stats["emotions"].get)
             lines.append(f"User's dominant mood today: {dominant}.")
+
+    # Recently Learned Knowledge
+    knowledge = get_relevant_knowledge("", limit=2)
+    if knowledge:
+        k_str = " | ".join(f"{k['topic']}: {k['content'][:150]}..." for k in knowledge)
+        lines.append(f"Learned context: {k_str}")
 
     return " ".join(lines) if lines else ""

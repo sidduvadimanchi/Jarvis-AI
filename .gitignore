@@ -1,7 +1,42 @@
-.venv/ 
-.env 
-__pycache__/ 
-*.pyc 
-credentials.json 
-gmail_token.json 
+# ── Secrets & Credentials ─────────────────────────────
+.env
+credentials.json
 Data/gmail_token.json
+*.json.bak
+
+# ── Python ────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.venv/
+venv/
+env/
+
+# ── Data / Runtime Files ──────────────────────────────
+Data/Files/
+Data/sent_emails/
+Data/ChatLog*.json
+Data/jarvis_memory.db
+Data/jarvis_memory.db-wal
+Data/jarvis_memory.db-shm
+interface/Data/cache/
+interface/speech/
+
+# ── Chrome Profiles ───────────────────────────────────
+ChromeProfile/
+ChromeProfile_selenium/
+
+# ── IDE / OS ──────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# ── Build / Dist ──────────────────────────────────────
+build/
+dist/
+*.egg-info/

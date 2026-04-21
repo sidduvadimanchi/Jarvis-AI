@@ -21,10 +21,10 @@ from dotenv import dotenv_values
 # ──────────────────────────────────────────────
 _env = dotenv_values(".env")
 
-ASSISTANT_VOICE: str   = _env.get("AssistantVoice", "en-US-AriaNeural")  # FIX: default fallback
-VOICE_RATE:      str   = _env.get("VoiceRate",      "+13%")               # NEW: configurable
-VOICE_PITCH:     str   = _env.get("VoicePitch",     "+5Hz")               # NEW: configurable
-VOICE_VOLUME:    float = float(_env.get("VoiceVolume", "1.0"))            # NEW: configurable
+ASSISTANT_VOICE: str   = _env.get("AssistantVoice", "en-US-AriaNeural").split("#")[0].strip()  # FIX: remove comments
+VOICE_RATE:      str   = _env.get("VoiceRate",      "+0%").split("#")[0].strip() or "+0%"
+VOICE_PITCH:     str   = _env.get("VoicePitch",     "+0Hz").split("#")[0].strip() or "+0Hz"
+VOICE_VOLUME:    float = float(_env.get("VoiceVolume", "1.0").split("#")[0].strip() or "1.0")
 
 DATA_DIR:  str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Data")  # FIX: cross-platform
 CACHE_DIR: str = os.path.join(DATA_DIR, "cache")
@@ -57,6 +57,7 @@ except Exception as exc:
     _MIXER_READY = False
 
 _stop_event = threading.Event()   # NEW: thread-safe interrupt
+_speech_lock = threading.Lock()   # NEW: global mutex to prevent overlapping voices
 
 
 def stop_speaking() -> None:
@@ -64,27 +65,49 @@ def stop_speaking() -> None:
     _stop_event.set()
 
 
+def _clean_text_for_tts(text: str) -> str:
+    """去除表情符号以防止 TTS 播放引擎将它们读成文本。"""
+    import re
+    # Remove emojis using a broad unicode range regex
+    # Matches most common emoji ranges
+    emoji_pattern = re.compile(
+        "["
+        "\U0001f600-\U0001f64f"  # emoticons
+        "\U0001f300-\U0001f5ff"  # symbols & pictographs
+        "\U0001f680-\U0001f6ff"  # transport & map symbols
+        "\U0001f1e0-\U0001f1ff"  # flags (iOS)
+        "\U00002702-\U000027b0"
+        "\U000024c2-\U0001f251"
+        "\U0001f900-\U0001f9ff"  # Supplemental Symbols and Pictographs
+        "\U0001fa70-\U0001faff"  # Symbols and Pictographs Extended-A
+        "]+", flags=re.UNICODE)
+    return emoji_pattern.sub(r'', text)
+
+
 # ──────────────────────────────────────────────
 # 3. ASYNC TTS GENERATION
 # ──────────────────────────────────────────────
 async def _generate_audio(text: str, path: str) -> None:
+    clean_text = _clean_text_for_tts(text)
+    if not clean_text.strip():
+        # Fallback if text was *only* emojis
+        clean_text = "..." 
+        
     communicate = edge_tts.Communicate(
-        text, ASSISTANT_VOICE, pitch=VOICE_PITCH, rate=VOICE_RATE
+        clean_text, ASSISTANT_VOICE, pitch=VOICE_PITCH, rate=VOICE_RATE
     )
     await communicate.save(path)
 
 
 def _run_async(coro) -> None:
-    """FIX: Safely run async coroutine even inside a running event loop."""
+    """BUG #2 FIX: Always use a fresh, isolated event loop — never schedule cross-thread.
+    asyncio.run() is safe to call from any regular (non-async) thread."""
     try:
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            future = asyncio.run_coroutine_threadsafe(coro, loop)
-            future.result(timeout=30)       # NEW: timeout protection
-        else:
-            loop.run_until_complete(coro)
-    except RuntimeError:
         asyncio.run(coro)
+    except RuntimeError as e:
+        print(f"[TTS] Async runner error: {e}")
+    except Exception as e:
+        print(f"[TTS] Unexpected async error: {e}")
 
 
 # ──────────────────────────────────────────────
@@ -112,43 +135,42 @@ def _play_audio(file_path: str, func=lambda r=None: True) -> bool:
     if not _MIXER_READY:
         print("[TTS] Playback unavailable: pygame mixer not initialized.")
         return False
+    
     _stop_event.clear()
-    try:
-        pygame.mixer.music.load(file_path)
-        pygame.mixer.music.play()
+    
+    # Use global lock to ensure only one thread manages playback state at a time
+    with _speech_lock:
+        try:
+            pygame.mixer.music.load(file_path)
+            pygame.mixer.music.play()
 
-        clock = pygame.time.Clock()
-        while pygame.mixer.music.get_busy():
-            if _stop_event.is_set():            # NEW: interrupt check
-                pygame.mixer.music.stop()
-                return False
-            try:
-                if func() is False:             # legacy callback
+            clock = pygame.time.Clock()
+            while pygame.mixer.music.get_busy():
+                if _stop_event.is_set():            # NEW: interrupt check
                     pygame.mixer.music.stop()
                     return False
-            except TypeError:
-                pass
-            clock.tick(20)
-        return True
+                try:
+                    if func() is False:             # legacy callback
+                        pygame.mixer.music.stop()
+                        return False
+                except TypeError:
+                    pass
+                clock.tick(20)
+            return True
 
-    except Exception as exc:
-        print(f"[TTS] Playback error: {exc}")
-        return False
+        except Exception as exc:
+            print(f"[TTS] Playback error: {exc}")
+            return False
 
-    finally:
-        try:
-            func(False)
-        except TypeError:
+        finally:
             try:
-                func()
-            except Exception:
+                func(False)
+            except:
                 pass
-        except Exception:
-            pass
-        try:
-            pygame.mixer.music.stop()           # FIX: always stop before releasing
-        except Exception:
-            pass
+            try:
+                pygame.mixer.music.stop()           # FIX: always stop before releasing
+            except:
+                pass
 
 
 # ──────────────────────────────────────────────
@@ -170,6 +192,11 @@ def tts(text: str, func=lambda r=None: True) -> bool:
         text = text[:MAX_TTS_CHARS]
 
     try:
+        # PROFESSIONAL BARGE-IN: stop current speech before starting new one
+        stop_speaking()
+        # Small sleep ensures mixer has released handle before next thread acquires lock
+        time.sleep(0.05) 
+        
         return _play_audio(_get_or_generate(text), func)
     except asyncio.TimeoutError:
         print("[TTS] Edge TTS timed out.")
@@ -211,6 +238,18 @@ def text_to_speech(text: str, func=lambda r=None: True) -> bool:
 # Backwards-compatible PascalCase aliases (drop-in replacement)
 TTS          = tts
 TextToSpeech = text_to_speech
+
+
+def tts_async(text: str) -> None:
+    """BUG #10 FIX: Fire-and-forget TTS — generates audio and plays without blocking caller.
+    Use this when the response is already displayed and you don't need to wait."""
+    def _worker():
+        try:
+            path = _get_or_generate(text)
+            _play_audio(path)
+        except Exception as exc:
+            print(f"[TTS] Async worker error: {exc}")
+    threading.Thread(target=_worker, daemon=True, name="TTS-Worker").start()
 
 
 # ──────────────────────────────────────────────

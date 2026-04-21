@@ -445,8 +445,15 @@ class JarvisChatbot:
             # Add context if brain available
             if _BRAIN:
                 context = build_memory_context()
+                # Also fetch specific knowledge for this query
+                from core.brain.memory import get_relevant_knowledge
+                specific_k = get_relevant_knowledge(query)
+                if specific_k:
+                    k_str = "\n".join([f"- {k['topic']}: {k['content']}" for k in specific_k])
+                    context += f"\nRelevant Knowledge:\n{k_str}"
+                
                 if context:
-                    payload.append({"role": "system", "content": f"Memory Context: {context}"})
+                    payload.append({"role": "system", "content": f"Brain Context:\n{context}"})
             
             payload.append({"role": "user", "content": query})
 
@@ -479,6 +486,10 @@ class JarvisChatbot:
 
                 answer = self._call_groq(payload, callback)
                 
+                # 7. Post-process (Emoji logic is now mostly in the prompt, but answer_modifier helps)
+                answer = self._filter_response(answer)
+                answer = self.answer_modifier(answer)
+
                 if _BRAIN: save_turn("user", query, self._current_emotion)
                 if _BRAIN: save_turn("assistant", answer)
                 
@@ -487,46 +498,49 @@ class JarvisChatbot:
                 self._cache.append({"role":"assistant","content":answer})
                 self._cache_dirty = True
                 
+                # 8. Background Learn — BUG #11 FIX: Rate-limited to 1-in-5 interactions.
+                # Previously fired a full Groq API call after EVERY response, doubling
+                # API usage and competing with TTS for network bandwidth.
+                self._learn_counter = getattr(self, '_learn_counter', 0) + 1
+                if _BRAIN and self._learn_counter % 5 == 0:
+                    threading.Thread(
+                        target=self._background_learn,
+                        args=(query, answer),
+                        daemon=True,
+                    ).start()
+                
                 return answer
             except Exception as e:
                 return f"Sorry, my brain encountered an error: {e}"
-            if _BRAIN and self._current_emotion:
-                intensity = detect_emotion_intensity(query, self._current_emotion)
-                if intensity >= 5:
-                    emotion_pfx = get_emotion_prefix(self._current_emotion)
 
-            self._cache.append({"role":"user","content":query})
-            payload = sys_msgs + self._cache[-MAX_HISTORY:]
+            # This block is intentionally left blank.
+            # (Dead code removed — BUG #1 FIX: Lines that were unreachable
+            #  after 'return answer' above, including a reference to undefined
+            #  'sys_msgs', have been deleted.)
 
-            # 9. Call Groq
-            try:
-                raw = self._call_groq(payload, callback)
-            except Exception as exc:
-                self._cache.pop()
-                return f"Connection trouble. Please try again. ({type(exc).__name__})"
-
-            if not raw:
-                self._cache.pop()
-                return "I didn't get a response. Could you rephrase?"
-
-            # 10. Post-process
-            answer = self._filter_response(raw)
-            answer = self.answer_modifier(answer)
-            if emotion_pfx:
-                answer = emotion_pfx + answer
-
-            # 11. Save to cache + persistent memory
-            self._cache.append({"role":"assistant","content":answer})
-            self._cache_dirty = True
-            self._rotate_if_needed()
-            self._flush(force=False)
-
-            if _BRAIN:
-                save_turn("user",      query,  self._current_emotion,
-                          self._session_topics[-1] if self._session_topics else None)
-                save_turn("assistant", answer)
-
-            return answer
+    def _background_learn(self, query: str, answer: str) -> None:
+        """
+        Analyze the exchange to see if we learned anything new about the user
+        or about a topic (especially if search results were involved).
+        """
+        if not _BRAIN: return
+        try:
+            # Short-fuse learning prompt
+            prompt = [
+                {"role": "system", "content": "Extract 1-2 key facts or preferences from this exchange. Format: 'Topic: Fact'. If nothing concrete, say 'None'."},
+                {"role": "user", "content": f"User: {query}\nJarvis: {answer}"}
+            ]
+            # Use Groq to extract (non-streaming, low temp)
+            raw = self._call_groq(prompt)
+            if "None" in raw or len(raw) < 5: return
+            
+            from core.brain.memory import save_knowledge
+            for line in raw.split("\n"):
+                if ":" in line:
+                    topic, content = line.split(":", 1)
+                    save_knowledge(topic.strip(), content.strip(), source="interaction")
+        except Exception:
+            pass
 
     def flush(self) -> None:
         with self._lock:
